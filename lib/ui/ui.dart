@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:covid_19/data/slots.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:http/http.dart' as http; 
+import 'package:http/http.dart' as http;
 
 class MyHomePage extends StatefulWidget {
   @override
@@ -14,32 +14,35 @@ class _MyHomePageState extends State<MyHomePage> {
   TextEditingController pincontroller = TextEditingController();
   TextEditingController datecontroller = TextEditingController();
   //--------------------------------------------------------------------
-  
+
   DateTime? datetime;
   DateFormat dateFormat = DateFormat('dd-MM-yyyy');
   List slots = [];
   //--------------------------------------------------------------------
 
-  void getslots()async {
-    await  http.get(Uri.parse('https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/findByPin?pincode='
-     +pincontroller.text +
-      '&date=' 
-      + datecontroller.text))
-      .then((value) {
-        Map result = jsonDecode(value.body);
-        setState(() {
-          slots = result['sessions'];
-        });
-        if (slots.isEmpty) {
-          return CircularProgressIndicator();
-          
-        }else{
-           Navigator.push(context, MaterialPageRoute(builder: (context) => Slot(slots: slots,)));
-        }
-       
-
+  void getslots() async {
+    await http
+        .get(Uri.parse(
+            'https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/findByPin?pincode=' +
+                pincontroller.text +
+                '&date=' +
+                datecontroller.text))
+        .then((value) {
+      Map result = jsonDecode(value.body);
+      setState(() {
+        slots = result['sessions'];
+      });
+      if (slots.isEmpty) {
+        return CircularProgressIndicator();
+      } else {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => Slot(
+                      slots: slots,
+                    )));
+      }
     });
-    
   }
 
   //meathd----------------------------------------------------------https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/findByPin?pincode=110001&date=31-03-2021
@@ -96,19 +99,17 @@ class _MyHomePageState extends State<MyHomePage> {
                   child: Container(
                     child: TextFormField(
                       readOnly: true,
-                      onTap: () async{
-                         await showDatePicker(
-                           context: context,
-                            initialDate: DateTime.now(),
-                             firstDate: DateTime(2019),
-                              lastDate: DateTime(2022))
-                              .then((selectdate) {
-                                if(selectdate != null){
-                                  datecontroller.text = dateFormat.format(selectdate);
-                                }
-                                   
-                                
-                              });
+                      onTap: () async {
+                        await showDatePicker(
+                                context: context,
+                                initialDate: DateTime.now(),
+                                firstDate: DateTime(2019),
+                                lastDate: DateTime(2022))
+                            .then((selectdate) {
+                          if (selectdate != null) {
+                            datecontroller.text = dateFormat.format(selectdate);
+                          }
+                        });
                       },
                       keyboardType: TextInputType.datetime,
                       controller: datecontroller,
@@ -134,9 +135,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   child: Container(
                     height: 55,
                     width: 300,
-                    
                     decoration: BoxDecoration(
-                  
                         border: Border.all(color: Colors.white54),
                         color: Colors.teal,
                         borderRadius: BorderRadius.circular(20)),
@@ -157,4 +156,3 @@ class _MyHomePageState extends State<MyHomePage> {
         ));
   }
 }
-
